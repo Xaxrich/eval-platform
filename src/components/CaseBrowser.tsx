@@ -6,7 +6,8 @@ import { ChevronDown, ChevronRight, Search } from "lucide-react";
 
 type CaseRow = (typeof CASES_0922)[number];
 
-const scoreTone = (s: number) => s === 3 ? "green" : s === 2 ? "blue" : s === 1 ? "amber" : "red";
+const scoreTone = (s: number | null) => s === null ? "zinc" : s === 3 ? "green" : s === 2 ? "blue" : s === 1 ? "amber" : "red";
+const shortLabel = (l: string) => l.includes("_") ? l.split("_")[1] : l;
 
 export default function CaseBrowser() {
   const [fScore, setFScore] = useState<string>("all");
@@ -59,18 +60,19 @@ export default function CaseBrowser() {
               <span className="w-10 shrink-0 text-[11px] text-zinc-500">{c.turns}</span>
               <span className="min-w-0 flex-1 truncate text-[12.5px] text-zinc-800">{c.query.replace(/\n/g, " / ")}</span>
               {c.safety && <Pill tone="red">安全</Pill>}
-              {(c.labels as string[]).slice(0, 1).map(l => <Pill key={l} tone="amber">{l}</Pill>)}
-              <Pill tone={scoreTone(c.score) as never}>{c.score} 分</Pill>
+              {(c.labels as string[]).slice(0, 1).map(l => <Pill key={l} tone="amber">{shortLabel(l)}</Pill>)}
+              <Pill tone={scoreTone(c.score) as never}>{c.score === null ? "未评" : `${c.score} 分`}</Pill>
             </button>
             {openId === c.id && (
               <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} className="overflow-hidden border-b border-zinc-100 bg-zinc-50/60">
                 <div className="space-y-2 px-12 py-3 text-[12px] leading-relaxed">
-                  <div><span className="text-zinc-400">核心能力点：</span><span className="text-zinc-700">{c.capability}</span></div>
-                  <div><span className="text-zinc-400">预期表现：</span><span className="text-zinc-700">{c.expect}</span></div>
+                  <div><span className="text-zinc-400">query 全文：</span><span className="text-zinc-700 whitespace-pre-wrap">{c.query}</span></div>
                   {(c.labels as string[]).length > 0 && (
-                    <div className="flex items-center gap-1.5"><span className="text-zinc-400">问题标签：</span>
-                      {(c.labels as string[]).map(l => <Pill key={l} tone="amber">{l}</Pill>)}</div>
+                    <div className="flex flex-wrap items-center gap-1.5"><span className="text-zinc-400">问题标签：</span>
+                      {(c.labels as string[]).map(l => <Pill key={l} tone="amber">{shortLabel(l)}</Pill>)}</div>
                   )}
+                  {c.note && <div><span className="text-zinc-400">标注备注（原文）：</span><span className="text-zinc-700">{c.note.replace(/^标注备注：\s*/, "")}</span></div>}
+                  <div className="text-[11px] text-zinc-400">标注人 {c.annotator || "—"} · 质检 {c.qc || "—"}</div>
                 </div>
               </motion.div>
             )}
@@ -79,7 +81,7 @@ export default function CaseBrowser() {
         {list.length === 0 && <div className="px-4 py-10 text-center text-[12px] text-zinc-400">无匹配用例</div>}
       </div>
       <div className="border-t border-zinc-100 bg-zinc-50 px-4 py-2 text-[11px] text-zinc-400">
-        分数与标签为按 0922 真实汇总分布重建的演示数据；汇总口径（可用率 66%、分数分布 13/20/16/1、标签 11/9/6/5、安全 6/7）为真实记录
+        全部为 0922 真实评测工作簿逐行记录（query/打分/标签/标注备注/标注质检人）；3 条原始未评分如实显示「未评」
       </div>
     </div>
   );

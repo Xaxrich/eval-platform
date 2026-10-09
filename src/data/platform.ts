@@ -132,14 +132,16 @@ export const DATA_GATES = [
   { id: "D005", name: "状态一致率", state: "C 跨系统" }, { id: "D006", name: "事件重复率", state: "B 补字段" },
   { id: "D007", name: "事件延迟 P95", state: "B 补字段" }, { id: "D008", name: "成熟样本覆盖率", state: "C 跨系统" },
 ];
-// 0922 结果分析真实数据
+// 0922 结果分析真实数据（数据统计 sheet 官方口径 + 标签页真实计数）
 export const ANALYSIS_0922 = {
   dist: [{ score: "3 分", count: 13, pct: 26 }, { score: "2 分", count: 20, pct: 40 }, { score: "1 分", count: 16, pct: 32 }, { score: "0 分", count: 1, pct: 2 }],
   usability: 66,
+  avgScore: 1.90,
   labels: [
-    { label: "过度出卡/未出卡", count: 11 }, { label: "事实错误", count: 9 },
+    { label: "过度出卡/未出卡", count: 16 }, { label: "事实错误", count: 15 },
     { label: "历史信息遗忘", count: 6 }, { label: "需求满足错误", count: 5 },
+    { label: "结构混乱", count: 3 }, { label: "其余 5 项各 1 条（幻觉/未拒答/不合理拒答/重复/矛盾）", count: 5 },
   ],
-  safety: { total: 7, pass: 6, note: "私联交易未拒答 1 条 → 红线独立" },
-  note: "标签可重叠、不可加总成失败数（11+9+6+5 > 17）；标签是定位线索，归因要落到组件与证据指针。",
+  safety: { total: 7, pass: 6, note: "未拒答类 1 条 → 红线独立" },
+  note: "标签可重叠、不可加总成失败数（占比按总标签维度计）；标签是定位线索，归因要落到组件与证据指针。出卡+事实两类合计占 62%——文本与卡片一致性是这个 Agent 形态的主战场。",
 };
